@@ -71,9 +71,9 @@
 ## 安裝後的驗收
 
 1. USB：用可傳資料的線連接 USB Device 埠，確認 Windows 裝置管理員沒有驅動錯誤，再到 NI MAX → My System → Devices and Interfaces 找 USB VISA resource。
-2. LAN：確認電腦與儀器的 IP／子網及服務設定。MAX 或程式未自動發現 LAN 儀器時，依上表手動建立完整資源；Refresh Resources 不是完整 LAN 掃描。
+2. LAN：確認電腦與儀器的 IP／子網及服務設定。可在 MAX 依上表建立資源並測試；應用程式只需填入 Scope IP 或 AC Source IP。欄位空白會跳過該台，不會搜尋整個 LAN。
 3. 在 NI MAX 的 VISA Test Panel／Interactive Control 開啟對應資源，依儀器設定 termination 後只查詢 `*IDN?`，確認回覆與機身型號一致。61512 使用 2101，勿改用未經手冊確認的 5025。
-4. 關閉測試面板，避免占用同一資源。開啟 `Start Real.cmd` → Instrument Connection → Refresh Resources 或 Add Instrument → 選正確 driver／完整型號 → Connect / Test Connection。
+4. 關閉測試面板，避免占用同一資源。開啟 `Start Real.cmd` → Instrument Connection；需要連線 Scope / AC Source 時分別填入 IPv4，然後按 **Scan & Connect**。USB 設備會自動掃描辨識，只加入支援型號，不必指定 driver 或 VISA resource。
 5. 看到正確識別、Connected 與 latency，接著 Start Monitoring，確認量測更新。僅查詢即可完成連線驗收，不需 Output ON／Load ON。
 
 ## 常見問題
@@ -81,11 +81,9 @@
 - **程式找不到 VISA library**：確認已安裝 x64 VISA runtime 並依安裝器要求重開機。`config/application.json` 的 `communication.visa_backend` 預設空字串，交由 PyVISA 選擇；若有多家 VISA 並存，先確認實際載入來源，必要時指定已確認的 NI x64 VISA DLL 完整路徑。JSON 中的路徑反斜線需寫成 `\\`；不要把 NI-VISA 產品名稱當成 PyVISA backend 代號。
 - **MAX 看不到資源**：先確認 **NI-VISA Configuration Support** 有裝。若是 USB，再查實體連接埠、線材、USB 通訊卡及原廠驅動；Windows 看得到裝置不等於已建立 VISA resource。可透過 NI Package Manager 修改 NI-VISA 補裝組件。
 - **LAN timeout**：確認 IP、2101 Socket 或 VXI-11 協定、儀器 server、termination 與允許的防火牆規則。VXI-11 不只使用單一固定 TCP port；不要把停用整個防火牆當作正常安裝步驟。
-- **MSO44B 查詢可用但截圖 timeout／程式異常**：NI 官方記錄 NI-VISA 2026.x 的 VXI-11 bounded-read 問題，可能影響分段讀取或二進位截圖。本專案 MSO44B 使用 VXI-11 `read_raw()`，應另測實機截圖；目前未確認這支線上安裝器最終下載的 runtime 是否已含修正。記錄實際 runtime 版本與 NI I/O Trace，依 NI 官方問題文件／修正資訊處理，勿以 `*IDN?` 成功視為完整通訊驗證。
+- **MSO44B 查詢可用但截圖 timeout／程式異常**：NI 官方記錄 NI-VISA 2026.x 的 VXI-11 bounded-read 問題，可能影響分段讀取或二進位截圖。請核對實際安裝的 runtime 版本是否已修正，並測試實機截圖。可記錄 NI I/O Trace，依 NI 官方問題文件／修正資訊處理；`*IDN?` 成功不代表截圖傳輸一定正常。
 
-## 驗證範圍與官方來源
-
-已完成：本機安裝器檔案版本、內嵌產品目標、簽章與 SHA-256 檢查；專案使用的介面／backend 程式碼核對。尚未執行：此版本的系統安裝、安裝畫面逐項實測、乾淨電腦驗證及實體儀器連線驗證。
+## 官方文件
 
 - [NI-VISA 官方下載／Install Offline](https://www.ni.com/en/support/downloads/drivers/download.ni-visa.html)
 - [NI：Configuration Support 與 MAX 資源偵測](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA00Z000000P6soSAC&l=en-US)

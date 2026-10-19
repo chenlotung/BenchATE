@@ -1,4 +1,4 @@
-"""Check release-only PDF conversion, local links, source text and original manuals."""
+"""Check consumer-only packaging, PDF content, links and archive integrity."""
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -13,6 +13,7 @@ from markdown_it import MarkdownIt
 from pypdf import PdfReader
 
 from release_documents import release_text
+from build_portable import RELEASE_BUNDLE, RELEASE_ROOT_NAMES, USER_DOCUMENTS
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,22 +31,23 @@ def body_text(page):
 
 def validate(bundle):
     bundle = Path(bundle).resolve()
-    assert bundle.is_relative_to(ROOT/"dist")
+    assert bundle == RELEASE_BUNDLE.resolve()
+    assert {p.name for p in bundle.iterdir()} <= RELEASE_ROOT_NAMES
+    assert not any((bundle/name).exists() for name in ("docs", "app", "scripts", "tests", "README.pdf", "requirements-tested.txt"))
     assert not list(bundle.rglob("*.md")), "Markdown remained in release"
     assert not (bundle/"NI_VISA_INSTALLATION_zh-TW.txt").exists()
     assert not (bundle/"README_PORTABLE.txt").exists()
-    sources = [ROOT/name for name in ("README.md", "README_PORTABLE.md", "THIRD_PARTY_NOTICES.md")]
-    sources += [p for p in (ROOT/"docs").rglob("*.md") if p.name != "REQUIREMENTS_V1.md"]
     parser = MarkdownIt("commonmark", {"html": False}).enable("table")
     checked_links = 0
     page_counts = {}
-    for source in sources:
-        target = bundle/source.relative_to(ROOT).with_suffix(".pdf")
+    for source_name, destination in USER_DOCUMENTS.items():
+        source = ROOT/source_name
+        target = bundle/Path(destination).with_suffix(".pdf")
         assert target.exists(), target
         reader = PdfReader(target)
         text = compact("\n".join(body_text(p) for p in reader.pages))
         markdown = source.read_text(encoding="utf-8-sig")
-        markdown = markdown.replace("../../../../datasheet/", "../originals/").replace("../../datasheet/", "instruments/originals/")
+        markdown = markdown.replace("docs/NI_VISA_INSTALLATION_zh-TW.md", "NI_VISA_INSTALLATION_zh-TW.md")
         for token in parser.parse(release_text(markdown)):
             if token.type == "inline":
                 for child in token.children or []:
@@ -65,31 +67,24 @@ def validate(bundle):
                     assert linked.suffix.lower() != ".md", (target, uri)
                     checked_links += 1
         page_counts[target.relative_to(bundle).as_posix()] = len(reader.pages)
-    # Preserve the manufacturers' PDFs byte for byte.
-    manuals = [(source, bundle/"docs/instruments/originals"/source.name)
-               for source in (ROOT.parent/"datasheet").glob("*.pdf")]
-    rigol = Path("docs/instruments/rigol_dm3058e/Programming_Guide_DM3058.pdf")
-    manuals.append((ROOT/rigol, bundle/rigol))
-    for source, target in manuals:
-        assert hashlib.sha256(source.read_bytes()).digest() == hashlib.sha256(target.read_bytes()).digest(), target
     # Vendor Markdown licenses are readable PDFs too; inspect every generated PDF.
-    report = json.loads((bundle/"docs/validation/release_documents.json").read_text(encoding="utf-8"))
+    report = json.loads((ROOT/"tmp/release_documents.json").read_text(encoding="utf-8"))
     for record in report["converted"]:
         path = bundle/record["pdf"]
         assert hashlib.sha256(path.read_bytes()).hexdigest() == record["pdf_sha256"], path
+    for path in bundle.rglob("*.pdf"):
         reader = PdfReader(path)
         assert reader.pages and all(body_text(page).strip() for page in reader.pages), path
         page_counts[path.relative_to(bundle).as_posix()] = len(reader.pages)
-    return {"passed": True, "project_markdown_sources_preserved": len(sources),
+    return {"passed": True, "documentation_profile": "end_user", "user_documents_checked": len(USER_DOCUMENTS),
             "generated_pdfs_checked": len(page_counts), "local_pdf_links_checked": checked_links,
-            "original_manuals_unchanged": len(manuals), "page_counts": page_counts}
+            "developer_documents_excluded": True, "page_counts": page_counts}
 
 
 def render(bundle, poppler, proof_dir):
     from PIL import Image, ImageDraw
-    report = json.loads((bundle/"docs/validation/release_documents.json").read_text(encoding="utf-8"))
     proof_dir.mkdir(parents=True, exist_ok=True)
-    paths = [bundle/record["pdf"] for record in report["converted"]]
+    paths = sorted(bundle.rglob("*.pdf"))
     def one(item):
         number, path = item
         prefix = proof_dir/f"{number:02d}-{path.stem}"
@@ -121,7 +116,7 @@ def render(bundle, poppler, proof_dir):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--bundle", type=Path, default=ROOT/"dist/ATEWorkbench")
+    parser.add_argument("--bundle", type=Path, default=RELEASE_BUNDLE)
     parser.add_argument("--poppler", type=Path)
     args = parser.parse_args()
     result = validate(args.bundle)

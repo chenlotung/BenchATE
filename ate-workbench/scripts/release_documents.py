@@ -1,7 +1,6 @@
 """Render staged release Markdown to readable, linked PDFs; leave source files alone."""
 from html import escape
 import hashlib
-import json
 import os
 from pathlib import Path
 import re
@@ -232,12 +231,6 @@ def convert_release_documents(bundle):
     """Only mutate the caller's staged bundle, never the project's Markdown originals."""
     bundle = Path(bundle).resolve()
     records = {}
-    previous = bundle/"docs/validation/release_documents.json"
-    if previous.is_file():
-        for record in json.loads(previous.read_text(encoding="utf-8")).get("converted", []):
-            target = (bundle/record["pdf"]).resolve()
-            if target.is_relative_to(bundle) and target.is_file():
-                records[record["pdf"]] = record
     for source in sorted(bundle.rglob("*.md")):
         if not source.resolve().is_relative_to(bundle):
             raise ValueError(f"Markdown source escapes release directory: {source}")

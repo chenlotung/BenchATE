@@ -7,7 +7,7 @@
 3. `Start Demo.cmd` 使用模擬設備；`ATEWorkbench.exe` 預設是真實模式。沒有 Python 安裝也能執行。
 4. 設備設定分別存在 `config/instruments.local.json` 與 `config/instruments.demo.local.json`；不儲存輸出 ON 或安全批准狀態。
 5. EXE 未簽章；包內 `manifest.json` 及 ZIP 同名 `.sha256` 可核對檔案完整性。
-6. 先開啟 `README_PORTABLE.pdf`。Release 說明文件由 Markdown 原稿轉為 PDF；真正的文字授權檔、requirements 與機器讀取的設定檔保留原格式。
+6. 先開啟 `README_PORTABLE.pdf`。Release 只附使用、NI-VISA 安裝與授權 PDF；原始碼、requirements、架構、測試、交付報告及原廠通訊手冊不放入發行包。原生文字授權與設定檔保留原格式。
 
 本機已解壓至另一個目錄測試可攜性，結果記錄於交付報告。沒有另一台乾淨 Windows VM，不能宣稱已跨電腦驗證。
 

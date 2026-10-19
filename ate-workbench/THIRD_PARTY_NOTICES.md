@@ -1,6 +1,6 @@
 # Third-party dependencies
 
-Package metadata from the tested environment. License texts are retained in the portable ZIP under `licenses/`. Instrument PDFs retain manufacturer copyright; they are documentation, not software dependencies.
+This distribution contains the following third-party software. Their license texts are retained under `licenses/` and with the corresponding runtime files.
 
 | Package | Tested version | License metadata |
 |---|---|---|
@@ -13,8 +13,8 @@ Package metadata from the tested environment. License texts are retained in the 
 | PyVISA | 1.16.2 | See bundled license files (full package metadata) |
 | PyInstaller | 6.22.3 | GPLv2-or-later with a special exception which allows to use PyInstaller to build and distribute non-free programs (including commercial ones) |
 
-Runtime imports use Qt Core/Gui/Widgets and PyQtGraph; no web server or browser runtime is needed by this application. The Python runtime and Windows runtime DLL notices supplied by packaging tools remain with their dependencies.
+Python and Windows runtime DLL notices supplied with the runtime remain with their dependencies.
 
-The portable ZIP also carries the user-supplied, unmodified National Instruments online installer `installers/ni-visa_26.8_online.exe`. NI-VISA is installed separately through NI Package Manager and remains subject to the NI license terms displayed by its installer. It is not part of the application's Python dependencies. See `docs/NI_VISA_INSTALLATION_zh-TW.md` for the installer identity, checksum, component selection and internet requirements.
+The ZIP also contains the unmodified National Instruments online installer `installers/ni-visa_26.8_online.exe`. NI-VISA is installed separately through NI Package Manager and remains subject to the NI license terms displayed by its installer. See the [NI-VISA installation guide](docs/NI_VISA_INSTALLATION_zh-TW.md) for component selection and internet requirements.
 
-Build tool license metadata does not change the license of the project source. See the actual included license texts for redistribution terms.
+See the included license texts for redistribution terms.

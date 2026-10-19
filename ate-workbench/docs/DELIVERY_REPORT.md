@@ -53,9 +53,9 @@
 - 原始碼 Demo 一鍵掃描連線短測：**20.036 秒**，6 組設備/channel 各 20–20 筆；無錯誤，截圖收到，Worker/CSV 釋放成功；GUI 心跳最長間隔 0.125 秒。
 - GUI 實際畫面：`connection_dark.png`、`connection_light.png`、`dashboard_dark.png`、`scope_preview.png`，均位於 `docs/validation/`。
 - Windows x64 可攜式資料夾與 ZIP 已建立；內含 EXE、Python DLL、Qt、PyQtGraph、NumPy、PyVISA、預設設定、原廠文件及依賴授權檔。
-- Release 文件格式：專案保留 Markdown 原稿，打包時轉為 PDF，包含快速開始、完整 README、NI-VISA 安裝、架構、能力、限制、驗證清單、SCPI 與來源文件；來源手冊 PDF 原封不動。不再包含 `.md` 或以 `.txt` 偽裝的 Markdown 指南。原生文字授權與 requirements 保留原格式。
-- 解壓後 EXE 一鍵掃描連線驗證 **Passed**：20.029 秒、6 組設備/channel 各 20 筆、GUI 心跳最長間隔 0.127 秒、無錯誤、PNG 收到、Worker/CSV 全部釋放、exit code 0。使用不同的含中文/空白路徑，從 PATH 移除 Python，ZIP CRC 與 manifest 全部 SHA-256 通過。原始證據：`docs/validation/portable_smoke.json`。
-- Release PDF 驗證：37 份轉換 PDF 的文字與頁面檢查通過、234 個本地 PDF 連結指向有效檔案、6 份原廠手冊 SHA-256 不變；逐頁 PNG 已檢查，沒有缺字、裁切或空白頁。記錄：`docs/validation/release_pdf_checks.json`。
+- Release 改為使用者發行包：只含 EXE / 依賴、預設設定、啟動捷徑、NI-VISA 安裝程式、快速使用 / NI-VISA 安裝 PDF 及必要授權。架構、原始碼、SCPI 表、原廠通訊手冊、測試 / 交付報告與截圖只留在專案；以白名單及乾淨 staging 目錄打包，避免更新文件時夾帶舊檔。
+- 解壓後 EXE 一鍵掃描連線驗證 **Passed**：20.004 秒、6 組設備/channel 各 20 筆、GUI 心跳最長間隔 0.127 秒、無錯誤、PNG 收到、Worker/CSV 全部釋放、exit code 0。使用不同的含中文/空白路徑，從 PATH 移除 Python，ZIP CRC 與 manifest 全部 SHA-256 通過。原始證據：`docs/validation/portable_smoke.json`。
+- Release PDF 驗證：22 份 PDF（2 份使用 / 安裝指南，其餘為必要授權）檢查通過、3 個本地 PDF 連結有效。確認開發文件與通訊手冊均未放入 ZIP，逐頁預覽無缺字、裁切或空白頁。記錄：`docs/validation/release_pdf_checks.json`。
 - 未在另一台乾淨 Windows VM 驗證；不宣稱硬體相容或跨機環境已完成測試。
 - 1 小時測試：依使用者要求 **Skipped**；保留的中斷紀錄不視為通過。
 

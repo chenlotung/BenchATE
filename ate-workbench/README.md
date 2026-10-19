@@ -13,7 +13,7 @@ Windows 11 / Python 3.11+ 的桌面儀器連線、監控與基本輸出控制平
 - `config/`、`data/`、`logs/` 與 EXE 同層；請解壓到可寫入的資料夾。
 - 真實 USB / VXI-11 仍需要目標電腦安裝 VISA 原生 backend 與設備驅動，見 [安裝指南](docs/installation.md)。
 - 已附 NI-VISA 26.8 線上安裝器（`installers/ni-visa_26.8_online.exe`）與 [組件勾選說明](docs/NI_VISA_INSTALLATION_zh-TW.md)；解壓後可直接開啟 `NI_VISA_INSTALLATION_zh-TW.pdf`。安裝器需要網路下載套件。
-- 專案維護 Markdown 原稿；release 將 README、操作/安裝文件及其他 Markdown 轉成 PDF，原廠 PDF 手冊保留原檔。先看 `README_PORTABLE.pdf`，不再提供以 `.txt` 包裝的 Markdown。
+- Release 是使用者發行包，只附快速操作、NI-VISA 安裝與授權 PDF；先看 `README_PORTABLE.pdf`。原始碼、架構、SCPI 表、原廠通訊手冊、測試與交付報告留在專案中；不提供以 `.txt` 包裝的 Markdown。
 
 ## 在目前工作區執行原始碼
 

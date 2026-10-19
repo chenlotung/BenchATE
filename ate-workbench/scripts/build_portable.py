@@ -12,6 +12,15 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 ROOT = Path(__file__).resolve().parents[1]
 VISA_INSTALLER = ROOT.parent/"ni-visa_26.8_online.exe"
+RELEASE_BUNDLE = ROOT/"build/release/ATEWorkbench"
+USER_DOCUMENTS = {
+    "README_PORTABLE.md": "README_PORTABLE.md",
+    "docs/NI_VISA_INSTALLATION_zh-TW.md": "NI_VISA_INSTALLATION_zh-TW.md",
+    "THIRD_PARTY_NOTICES.md": "THIRD_PARTY_NOTICES.md",
+}
+RELEASE_ROOT_NAMES = {"ATEWorkbench.exe", "_internal", "config", "data", "logs", "installers", "licenses",
+                      "Start Demo.cmd", "Start Real.cmd", "manifest.json",
+                      "README_PORTABLE.pdf", "NI_VISA_INSTALLATION_zh-TW.pdf", "THIRD_PARTY_NOTICES.pdf"}
 
 
 def safe_generated_path(path):
@@ -22,6 +31,11 @@ def safe_generated_path(path):
 
 
 def make_zip(bundle, archive):
+    unexpected = {p.name for p in bundle.iterdir()} - RELEASE_ROOT_NAMES
+    if unexpected:
+        raise ValueError(f"Non-release files in package: {sorted(unexpected)}")
+    if {p.name for p in (bundle/"config").iterdir()} != {"application.json", "instruments.json"}:
+        raise ValueError("Release must contain only default configuration files")
     if any(p.suffix.lower() == ".md" for p in bundle.rglob("*")):
         raise ValueError("Release must contain rendered PDFs, not Markdown files")
     for name in ("NI_VISA_INSTALLATION_zh-TW.txt", "README_PORTABLE.txt"):
@@ -47,7 +61,8 @@ def main():
         raise SystemExit(f"Required NI-VISA online installer missing: {VISA_INSTALLER}")
     dist = safe_generated_path(ROOT/"dist")
     build = safe_generated_path(ROOT/"build")
-    bundle = safe_generated_path(dist/"ATEWorkbench")
+    runtime = safe_generated_path(dist/"ATEWorkbench")
+    bundle = safe_generated_path(RELEASE_BUNDLE)
     releases = safe_generated_path(ROOT/"releases")
     releases.mkdir(exist_ok=True)
     command = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--onedir", "--windowed",
@@ -67,33 +82,28 @@ def main():
         environment.pop("PYTHONPATH", None)
         environment["PYINSTALLER_CONFIG_DIR"] = str(safe_generated_path(ROOT/"tmp/pyinstaller-cache"))
         subprocess.run(command, cwd=ROOT, env=environment, check=True)
-    elif not (bundle/"ATEWorkbench.exe").exists():
+    elif not (runtime/"ATEWorkbench.exe").exists():
         raise SystemExit("Build the EXE before using --refresh-only")
-    for folder in ("config", "data", "logs", "docs"):
+    # Stage a clean consumer package. Never delete files from a previously run runtime folder.
+    stage = bundle.resolve()
+    if not stage.is_relative_to((ROOT/"build/release").resolve()) or stage.name != "ATEWorkbench":
+        raise ValueError(f"Unsafe release staging directory: {stage}")
+    if stage.exists():
+        shutil.rmtree(stage)
+    bundle.mkdir(parents=True)
+    shutil.copy2(runtime/"ATEWorkbench.exe", bundle/"ATEWorkbench.exe")
+    shutil.copytree(runtime/"_internal", bundle/"_internal")
+    for folder in ("config", "data", "logs"):
         (bundle/folder).mkdir(exist_ok=True)
     for name in ("application.json", "instruments.json"):
         shutil.copy2(ROOT/"config"/name, bundle/"config"/name)
-    shutil.copytree(ROOT/"docs", bundle/"docs", dirs_exist_ok=True,
-        ignore=shutil.ignore_patterns("demo_1h.json", "demo_1h.png", "REQUIREMENTS_V1.md", "__pycache__"))
-    originals = bundle/"docs/instruments/originals"
-    originals.mkdir(parents=True, exist_ok=True)
-    for manual in (ROOT.parent/"datasheet").glob("*.pdf"):
-        shutil.copy2(manual, originals/manual.name)
-    for path in (bundle/"docs").rglob("*.md"):
-        text = path.read_text(encoding="utf-8")
-        text = text.replace("../../../../datasheet/", "../originals/")
-        text = text.replace("../../datasheet/", "instruments/originals/")
-        path.write_text(text, encoding="utf-8")
-    for name in ("README.md", "README_PORTABLE.md", "THIRD_PARTY_NOTICES.md", "requirements-tested.txt"):
-        if (ROOT/name).exists():
-            shutil.copy2(ROOT/name, bundle/name)
+    for source, destination in USER_DOCUMENTS.items():
+        text = (ROOT/source).read_text(encoding="utf-8")
+        text = text.replace("docs/NI_VISA_INSTALLATION_zh-TW.md", "NI_VISA_INSTALLATION_zh-TW.md")
+        (bundle/destination).write_text(text, encoding="utf-8")
     installers = bundle/"installers"
     installers.mkdir(exist_ok=True)
     shutil.copy2(VISA_INSTALLER, installers/VISA_INSTALLER.name)
-    shutil.copy2(bundle/"docs/NI_VISA_INSTALLATION_zh-TW.md", bundle/"NI_VISA_INSTALLATION_zh-TW.md")
-    for name in ("NI_VISA_INSTALLATION_zh-TW.txt", "README_PORTABLE.txt"):
-        legacy = safe_generated_path(bundle/name)
-        legacy.unlink(missing_ok=True)
     # Retain the license files shipped with each dependency.
     licenses = bundle/"licenses"
     licenses.mkdir(exist_ok=True)
@@ -114,16 +124,18 @@ def main():
     documents = convert_release_documents(bundle)
     document_report = {"format": "PDF", "markdown_files_remaining": 0,
                        "legacy_text_copies_removed": True, "converted": documents}
-    (bundle/"docs/validation/release_documents.json").write_text(
+    report_path = ROOT/"tmp/release_documents.json"
+    report_path.parent.mkdir(exist_ok=True)
+    report_path.write_text(
         json.dumps(document_report, ensure_ascii=False, indent=2), encoding="utf-8")
     manifest = {"application": "ATE Workbench", "version": "0.1.0", "platform": "Windows x64",
-                "python": sys.version, "dependencies": versions, "one_hour_test": "Skipped at user request",
+                "python": sys.version, "dependencies": versions,
                 "visa_prerequisite": {"installer": f"installers/{VISA_INSTALLER.name}",
                     "install_target": "ni-visa_26.8", "online_installer": True,
-                    "guide": "NI_VISA_INSTALLATION_zh-TW.pdf", "system_installation_tested": False},
+                    "guide": "NI_VISA_INSTALLATION_zh-TW.pdf"},
                 "documentation": {"format": "PDF", "quick_start": "README_PORTABLE.pdf",
-                                  "markdown_included": False},
-                "hardware_verified": False, "files": {}}
+                                  "markdown_included": False, "audience": "end_user"},
+                "files": {}}
     code = hashlib.sha256()
     for source in sorted((ROOT/"app").rglob("*.py")):
         code.update(source.relative_to(ROOT).as_posix().encode())

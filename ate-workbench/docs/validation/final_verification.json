@@ -10,13 +10,15 @@
     "skipped": 0
   },
   "source_demo_seconds": 20.036,
-  "portable_demo_seconds": 20.029,
+  "portable_demo_seconds": 20.004,
   "screenshot_received": true,
   "workers_and_csv_released": true,
   "portable_executable_sha256": "88f658b4b9fbe8f5b4de921b5a971b6d34d8740e88b96fabc8482da884b0786d",
-  "pdf_documents_checked": 37,
-  "local_pdf_links_checked": 234,
+  "pdf_documents_checked": 22,
+  "local_pdf_links_checked": 3,
   "original_manuals_unchanged": 6,
   "one_hour_test": "Skipped at user request",
-  "hardware_verified": false
+  "hardware_verified": false,
+  "release_profile": "end_user",
+  "developer_documents_excluded": true
 }

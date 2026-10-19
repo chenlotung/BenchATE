@@ -1,26 +1,26 @@
 {
   "mode": "DEMO",
-  "elapsed_seconds": 20.029,
+  "elapsed_seconds": 20.004,
   "requested_seconds": 20.0,
-  "started_at": "2026-10-19T15:04:26.797442+08:00",
+  "started_at": "2026-10-19T15:44:39.552609+08:00",
   "app_source_sha256": "6362f0b8337cde6dc48ab4cac13906e70b2df95fab36f00c6ebf34bb97a1c512",
   "python_version": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
   "complete": true,
-  "heartbeat_count": 182,
+  "heartbeat_count": 181,
   "max_heartbeat_gap_seconds": 0.127,
   "frame_counts": {
+    "demo_chroma_66205/CH1": 20,
     "demo_chroma_61512/CH1": 20,
     "demo_rigol_dm3058e/CH1": 20,
     "demo_chroma_6312a/CH1": 20,
-    "demo_chroma_66205/CH1": 20,
     "demo_chroma_6312a/CH3": 20,
     "demo_chroma_63210a/CH1": 20
   },
   "buffer_sizes": {
+    "demo_chroma_66205/CH1": 20,
     "demo_chroma_61512/CH1": 20,
     "demo_rigol_dm3058e/CH1": 20,
     "demo_chroma_6312a/CH1": 20,
-    "demo_chroma_66205/CH1": 20,
     "demo_chroma_6312a/CH3": 20,
     "demo_chroma_63210a/CH1": 20
   },
@@ -36,8 +36,8 @@
   "screenshot_received": true,
   "memory_samples": [
     {
-      "elapsed_seconds": 11.01,
-      "private_bytes": 726659072
+      "elapsed_seconds": 11.05,
+      "private_bytes": 726466560
     }
   ],
   "hardware_verified": false,
@@ -48,9 +48,9 @@
     "archive_integrity": "passed",
     "manifest_checksums": "passed",
     "python_removed_from_path": true,
-    "executable": "G:\\Bench_ATE\\ate-workbench\\tmp\\portable validation \u6e2c\u8a66 150420\\ATEWorkbench\\ATEWorkbench.exe",
+    "executable": "G:\\Bench_ATE\\ate-workbench\\tmp\\portable validation \u6e2c\u8a66 154433\\ATEWorkbench\\ATEWorkbench.exe",
     "executable_sha256": "88f658b4b9fbe8f5b4de921b5a971b6d34d8740e88b96fabc8482da884b0786d",
-    "working_directory": "G:\\Bench_ATE\\ate-workbench\\tmp\\portable validation \u6e2c\u8a66 150420",
+    "working_directory": "G:\\Bench_ATE\\ate-workbench\\tmp\\portable validation \u6e2c\u8a66 154433",
     "unicode_and_space_path": true,
     "exit_code": 0,
     "external_python_required_by_executable": false,
