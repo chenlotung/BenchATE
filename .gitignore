@@ -1,0 +1,14 @@
+ate-workbench/.venv*/
+**/__pycache__/
+**/.pytest_cache/
+ate-workbench/tmp/
+ate-workbench/logs/*
+ate-workbench/data/*
+!ate-workbench/logs/.gitkeep
+!ate-workbench/data/.gitkeep
+ate-workbench/config/instruments.local.json
+ate-workbench/config/instruments.demo.local.json
+ate-workbench/build/
+ate-workbench/dist/
+ate-workbench/releases/
+ate-workbench/*.egg-info/

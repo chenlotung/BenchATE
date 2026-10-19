@@ -1,0 +1,47 @@
+{
+  "mode": "DEMO",
+  "elapsed_seconds": 20.036,
+  "requested_seconds": 20.0,
+  "started_at": "2026-10-19T15:04:21.002772+08:00",
+  "app_source_sha256": "6362f0b8337cde6dc48ab4cac13906e70b2df95fab36f00c6ebf34bb97a1c512",
+  "python_version": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
+  "complete": true,
+  "heartbeat_count": 182,
+  "max_heartbeat_gap_seconds": 0.125,
+  "frame_counts": {
+    "demo_chroma_61512/CH1": 20,
+    "demo_chroma_66205/CH1": 20,
+    "demo_chroma_6312a/CH1": 20,
+    "demo_chroma_6312a/CH3": 20,
+    "demo_rigol_dm3058e/CH1": 20,
+    "demo_chroma_63210a/CH1": 20
+  },
+  "buffer_sizes": {
+    "demo_chroma_61512/CH1": 20,
+    "demo_chroma_66205/CH1": 20,
+    "demo_chroma_6312a/CH1": 20,
+    "demo_chroma_6312a/CH3": 20,
+    "demo_rigol_dm3058e/CH1": 20,
+    "demo_chroma_63210a/CH1": 20
+  },
+  "worker_running": {
+    "demo_chroma_61512": true,
+    "demo_chroma_66205": true,
+    "demo_rigol_dm3058e": true,
+    "demo_chroma_6312a": true,
+    "demo_chroma_63210a": true,
+    "demo_tek_mso44b": true
+  },
+  "errors": [],
+  "screenshot_received": true,
+  "memory_samples": [
+    {
+      "elapsed_seconds": 10.94,
+      "private_bytes": 743264256
+    }
+  ],
+  "hardware_verified": false,
+  "shutdown_workers_released": true,
+  "shutdown_csv_released": true,
+  "process_exit_code": 0
+}
