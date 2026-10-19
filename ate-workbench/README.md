@@ -5,7 +5,9 @@ Windows 11 / Python 3.11+ 的桌面儀器連線、監控與基本輸出控制平
 
 ## 直接使用可攜式版本
 
-解壓縮 `releases/ATEWorkbench-0.1.0-windows-x64.zip`，保留整個 `ATEWorkbench` 資料夾。
+[下載 Windows x64 發行 ZIP](https://github.com/chenlotung/BenchATE/raw/refs/heads/main/ate-workbench/releases/ATEWorkbench-0.1.0-windows-x64.zip) · [SHA-256 校驗檔](releases/ATEWorkbench-0.1.0-windows-x64.zip.sha256)
+
+ZIP 與校驗檔均保存在 repo 的 `releases/`。解壓縮後保留整個 `ATEWorkbench` 資料夾。
 
 - `ATEWorkbench.exe` 或 `Start Real.cmd`：Real Mode，初始設備清單為空，不自動連線或啟用輸出。
 - `Start Demo.cmd`：明確標示 DEMO MODE；按 Scan & Connect 連線模擬設備，再 Start Monitoring。Scope / AC Source 的 IP 留白時同樣跳過；填入任意有效 IPv4 可模擬這兩台，不會存取網路。
@@ -96,7 +98,7 @@ Remove-Item Env:QT_QPA_PLATFORM
 建置後使用 EXE 自身的 `--demo --soak-seconds 20 --report PATH` 可在不依賴 Python 的情況執行短測試。
 成品為 Windows x64 的資料夾型 EXE；未簽署程式碼簽章。
 PDF 轉換只在建置時使用 ReportLab、Markdown parser 及 Windows 微軟正黑體，使用者執行 EXE 不需要安裝這些工具。只更新文件可執行 `scripts/build_portable.py --refresh-only`；同樣會轉換 PDF 並重建 manifest / ZIP。
-執行 `scripts/validate_release_documents.py` 可檢查文字內容、PDF 連結、原廠手冊及 ZIP 校驗碼；加上 `--poppler C:\path\to\pdftoppm.exe` 可產生逐頁預覽，保存在 `tmp/pdfs/release_review/`。
+執行 `scripts/validate_release_documents.py` 可檢查使用者發行白名單、PDF 內容與連結、ZIP 校驗碼；加上 `--poppler C:\path\to\pdftoppm.exe` 可產生逐頁預覽，保存在 `tmp/pdfs/release_review/`。
 
 ## 文件
 

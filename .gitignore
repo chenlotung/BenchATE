@@ -10,5 +10,7 @@ ate-workbench/config/instruments.local.json
 ate-workbench/config/instruments.demo.local.json
 ate-workbench/build/
 ate-workbench/dist/
-ate-workbench/releases/
+ate-workbench/releases/*
+!ate-workbench/releases/*.zip
+!ate-workbench/releases/*.zip.sha256
 ate-workbench/*.egg-info/

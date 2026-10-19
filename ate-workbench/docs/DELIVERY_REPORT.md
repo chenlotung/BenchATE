@@ -52,7 +52,7 @@
 - 新增掃描測試：確切 vendor/model 過濾、通用型號排除、未知設備不列入、timeout 後繼續、63106A inventory、兩個 IP 獨立留白/無效處理、已列舉 LAN 不繞過空白欄位、一鍵自動連線、重複掃描維持原 session、保存偏好只在辨識後恢復、背景掃描心跳與取消。Mock native VISA 完整走過「probe 關閉 → 正式連線 → 重掃不開第二個 session」。
 - 原始碼 Demo 一鍵掃描連線短測：**20.036 秒**，6 組設備/channel 各 20–20 筆；無錯誤，截圖收到，Worker/CSV 釋放成功；GUI 心跳最長間隔 0.125 秒。
 - GUI 實際畫面：`connection_dark.png`、`connection_light.png`、`dashboard_dark.png`、`scope_preview.png`，均位於 `docs/validation/`。
-- Windows x64 可攜式資料夾與 ZIP 已建立；內含 EXE、Python DLL、Qt、PyQtGraph、NumPy、PyVISA、預設設定、原廠文件及依賴授權檔。
+- Windows x64 可攜式資料夾與 ZIP 已建立；內含 EXE、Python DLL、Qt、PyQtGraph、NumPy、PyVISA、預設設定、使用 / 安裝 PDF 及依賴授權檔。
 - Release 改為使用者發行包：只含 EXE / 依賴、預設設定、啟動捷徑、NI-VISA 安裝程式、快速使用 / NI-VISA 安裝 PDF 及必要授權。架構、原始碼、SCPI 表、原廠通訊手冊、測試 / 交付報告與截圖只留在專案；以白名單及乾淨 staging 目錄打包，避免更新文件時夾帶舊檔。
 - 解壓後 EXE 一鍵掃描連線驗證 **Passed**：20.004 秒、6 組設備/channel 各 20 筆、GUI 心跳最長間隔 0.127 秒、無錯誤、PNG 收到、Worker/CSV 全部釋放、exit code 0。使用不同的含中文/空白路徑，從 PATH 移除 Python，ZIP CRC 與 manifest 全部 SHA-256 通過。原始證據：`docs/validation/portable_smoke.json`。
 - Release PDF 驗證：22 份 PDF（2 份使用 / 安裝指南，其餘為必要授權）檢查通過、3 個本地 PDF 連結有效。確認開發文件與通訊手冊均未放入 ZIP，逐頁預覽無缺字、裁切或空白頁。記錄：`docs/validation/release_pdf_checks.json`。
@@ -60,6 +60,7 @@
 - 1 小時測試：依使用者要求 **Skipped**；保留的中斷紀錄不視為通過。
 
 可攜式包：`releases/ATEWorkbench-0.1.0-windows-x64.zip`。同名 `.sha256` 為 ZIP 校驗碼；`manifest.json` 為包內各檔案 SHA-256。
+ZIP 與 `.zip.sha256` 均納入 Git repo，README 提供直接下載連結；建置暫存、虛擬環境及解壓執行目錄仍不納入。
 解壓後執行 `Start Demo.cmd`；`ATEWorkbench.exe` / `Start Real.cmd` 預設 Real Mode。
 
 ## E. 優先實機驗證
