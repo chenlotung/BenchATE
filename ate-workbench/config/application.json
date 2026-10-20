@@ -1,6 +1,6 @@
 {
   "application": {"theme": "dark", "default_mode": "real"},
   "acquisition": {"default_poll_interval_ms": 1000, "gui_refresh_interval_ms": 1000, "buffer_duration_seconds": 600, "polling_overrun_warning": true},
-  "communication": {"default_timeout_ms": 3000, "auto_reconnect": false, "command_logging": true, "visa_backend": ""},
+  "communication": {"default_timeout_ms": 3000, "auto_reconnect": false, "command_logging": true, "visa_backend": "@py"},
   "monitoring": {"default_trend_window_seconds": 60, "max_trend_window_seconds": 600}
 }

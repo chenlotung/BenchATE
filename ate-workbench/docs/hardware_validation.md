@@ -5,7 +5,7 @@
 
 ## 共用連線驗證
 
-- [ ] 安裝 x64 VISA backend；USB 裝置有正確 USBTMC/原廠驅動。
+- [ ] `--check-backend` 顯示 pyvisa-py、USB/TCPIP 程式庫可載入；USB 裝置已綁定相容 WinUSB/libusb 驅動，記錄實際 driver provider、版本與硬體 ID，不以 NI MAX 測試代替。
 - [ ] 掃描不改輸出、量測模式或 trigger；記錄連線本身是否導致前面板 remote。
 - [ ] 按 Scan & Connect 自動辨識並連線；只列入支援型號，其他品牌或同品牌其他型號均排除；核對 model/serial/firmware 與 latency。
 - [ ] Scope / AC Source IP 各自空白時跳過；兩欄空白仍可連 USB，backend 枚舉出的 LAN 資源不會繞過跳過規則。

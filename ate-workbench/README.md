@@ -3,9 +3,11 @@
 Windows 11 / Python 3.11+ 的桌面儀器連線、監控與基本輸出控制平台。GUI 使用 PySide6 Qt Widgets，趨勢圖使用 PyQtGraph。
 本版僅提供 Instrument Connection 與 Monitoring Dashboard 兩個頁面。
 
+本分支 `codex/pyvisa-py-backend` 使用 **PyVISA → pyvisa-py (@py)**，不載入 NI-VISA。USB 透過 PyUSB 與隨包 libusb DLL；Windows 必須已有相容的裝置驅動。原本 NI-VISA 版本保留在 main。
+
 ## 直接使用可攜式版本
 
-[下載 Windows x64 發行 ZIP](https://github.com/chenlotung/BenchATE/raw/refs/heads/main/ate-workbench/releases/ATEWorkbench-0.1.0-windows-x64.zip) · [SHA-256 校驗檔](releases/ATEWorkbench-0.1.0-windows-x64.zip.sha256)
+[下載 pyvisa-py Windows x64 發行 ZIP](https://github.com/chenlotung/BenchATE/raw/refs/heads/codex/pyvisa-py-backend/ate-workbench/releases/ATEWorkbench-0.1.0-pyvisa-py-windows-x64.zip) · [SHA-256 校驗檔](releases/ATEWorkbench-0.1.0-pyvisa-py-windows-x64.zip.sha256)
 
 ZIP 與校驗檔均保存在 repo 的 `releases/`。解壓縮後保留整個 `ATEWorkbench` 資料夾。
 
@@ -13,9 +15,8 @@ ZIP 與校驗檔均保存在 repo 的 `releases/`。解壓縮後保留整個 `AT
 - `Start Demo.cmd`：明確標示 DEMO MODE；按 Scan & Connect 連線模擬設備，再 Start Monitoring。Scope / AC Source 的 IP 留白時同樣跳過；填入任意有效 IPv4 可模擬這兩台，不會存取網路。
 - 不需另外安裝 Python。`_internal` 內是 EXE 必需的 Python、Qt 與其他依賴，請與 EXE 一起移動。
 - `config/`、`data/`、`logs/` 與 EXE 同層；請解壓到可寫入的資料夾。
-- 真實 USB / VXI-11 仍需要目標電腦安裝 VISA 原生 backend 與設備驅動，見 [安裝指南](docs/installation.md)。
-- 已附 NI-VISA 26.8 線上安裝器（`installers/ni-visa_26.8_online.exe`）與 [組件勾選說明](docs/NI_VISA_INSTALLATION_zh-TW.md)；解壓後可直接開啟 `NI_VISA_INSTALLATION_zh-TW.pdf`。安裝器需要網路下載套件。
-- Release 是使用者發行包，只附快速操作、NI-VISA 安裝與授權 PDF；先看 `README_PORTABLE.pdf`。原始碼、架構、SCPI 表、原廠通訊手冊、測試與交付報告留在專案中；不提供以 `.txt` 包裝的 Markdown。
+- 已包含 pyvisa-py、PyUSB 與 libusb DLL，不需要安裝 NI-VISA。LAN 只需儀器區域網路可達；USB 仍需要已綁定相容 WinUSB/libusb 驅動，見 [通訊指南](docs/PYVISA_PY_zh-TW.md)。
+- Release 是使用者發行包，只附快速操作、通訊與 USB 說明、授權 PDF；先看 `README_PORTABLE.pdf`。不包含 NI 安裝器、原始碼、架構、SCPI 表、原廠通訊手冊、測試或交付報告。
 
 ## 在目前工作區執行原始碼
 
@@ -71,6 +72,8 @@ Output OFF 是一般通訊操作，不能當成實體緊急停止。
 
 所有實機相容性均為 **Pending Hardware Verification**。缺少 VISA backend 會回報錯誤，絕不切換為 Demo 資料。
 
+`communication.visa_backend` 為 `@py`；舊設定的空字串也正規化為 `@py`，不自動選擇本機 NI-VISA。指定原生 DLL 或 `@ivi` 會回報設定錯誤。USB 掃描直接使用 pyvisa-py USB INSTR 枚舉，避免一般 list_resources 在過濾前搜尋 LAN；這個介面整合以 pyvisa-py 0.8.x 為範圍，升版需重測。
+
 ## 原始碼配置
 
 程式集中在 `app/`，只保留 `drivers/` 與 `gui/` 兩個子套件。設備管理與掃描在 `instruments.py`，佇列與背景執行在 `worker.py`，低階通訊在 `protocol.py`；設定、型別及資料處理各自保留一個檔案。
@@ -103,7 +106,7 @@ PDF 轉換只在建置時使用 ReportLab、Markdown parser 及 Windows 微軟�
 ## 文件
 
 - [安裝指南](docs/installation.md)
-- [NI-VISA 26.8 安裝與組件勾選](docs/NI_VISA_INSTALLATION_zh-TW.md)
+- [pyvisa-py 通訊、USB 條件與函式庫檢查](docs/PYVISA_PY_zh-TW.md)
 - [架構](docs/architecture.md)
 - [SCPI 指令、參數、頁碼、驗證階段](docs/SCPI_COMMAND_REFERENCE.md)
 - [Capabilities 與軟體安全限制](docs/capabilities.md)

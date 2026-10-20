@@ -1,6 +1,6 @@
 # ATE Workbench 可攜式版本
 
-Windows 11 x64 · 版本 0.1.0
+Windows 11 x64 · 版本 0.1.0 · pyvisa-py 版
 
 ## 開始使用
 
@@ -12,11 +12,11 @@ Windows 11 x64 · 版本 0.1.0
 
 掃描與連線不會 reset 或啟用輸出。通訊失敗後，請確認實體設備狀態，再手動掃描重新連線；Output OFF 不能作為實體緊急停止。
 
-## 真實儀器需要 NI-VISA
+## 通訊依賴已隨包提供
 
-ZIP 已包含原始線上安裝程式 `installers/ni-visa_26.8_online.exe`，仍需在電腦上另行安裝；需要網路與管理員權限。它不是完整離線安裝包，也不是可直接從 ZIP 載入的原生 VISA 驅動。
+本版使用 pyvisa-py，ZIP 已包含 Python、PyUSB 與 libusb DLL，不需要安裝 NI-VISA，也不會下載套件。Scope 與 AC Source 可直接走區域網路。
 
-依 [NI-VISA 安裝與組件選擇](docs/NI_VISA_INSTALLATION_zh-TW.md) 完成安裝，再測試實機連線。Demo 模式不需要 NI-VISA。
+USB 仍需要 Windows 已有相容的 WinUSB/libusb 裝置驅動；原有 NI USBTMC 驅動不保證相容。沒有相容驅動且禁止安裝的電腦，不能保證 USB 可用。詳見 [通訊與 USB 使用說明](docs/PYVISA_PY_zh-TW.md)。
 
 ## 支援的設備
 
@@ -40,8 +40,8 @@ ZIP 已包含原始線上安裝程式 `installers/ni-visa_26.8_online.exe`，仍
 
 ## 找不到設備時
 
-1. 真實模式先依 [NI-VISA 安裝指南](docs/NI_VISA_INSTALLATION_zh-TW.md) 安裝 x64 VISA 與正確的 USB 驅動；Demo 模式不需要安裝。
-2. USB 請接儀器的 Device / Remote 埠，確認資料線與原廠驅動；儀器前面板的 USB 儲存埠通常不能作為遠端通訊埠。
+1. 確認整份 ZIP 已解壓。執行 `ATEWorkbench.exe --check-backend` 可將程式庫檢查結果寫到 `logs/backend_check.json`，不會操作儀器。
+2. USB 請接儀器的 Device / Remote 埠，確認資料線、現有驅動是否相容 PyUSB/libusb，以及是否被其他程式占用；儀器前面板的 USB 儲存埠不能作為遠端通訊埠。
 3. Scope / AC Source 請填入實機 IPv4；空白會跳過該台。確認電腦與儀器網路可達，Scope 已啟用 VXI-11。
 4. 確認完整型號在上表內。其他型號不會列入設備清單；Timeout 後查明連接狀態，再按 Scan & Connect。
 5. 需要查閱通訊錯誤時，開啟 `logs/workbench.log`。首次使用真實設備時，請以允許的低能量條件核對量測、設定與輸出狀態。

@@ -1,0 +1,10 @@
+{
+  "variant": "pyvisa-py",
+  "app_source_sha256": "7e09d05c3fee8d81bdd7bc6322811ebab52fecf425845d16418f61c8bf1d699e",
+  "tests": 121,
+  "zip_bytes": 66842181,
+  "zip_sha256": "d6fc32fd69dfab253031345112806d8e97f963a314fa2afddceb182f1d91a108",
+  "checks": "passed",
+  "hardware_verified": false,
+  "one_hour_test": "skipped_at_user_request"
+}

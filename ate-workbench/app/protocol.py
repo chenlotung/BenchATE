@@ -12,6 +12,31 @@ from app.models import OutputState
 log = logging.getLogger(__name__)
 
 
+def python_backend(backend="@py"):
+    # Empty values from older configuration files must not select native VISA.
+    if backend not in (None, "", "@py"):
+        raise ValueError("This branch requires pyvisa-py: set communication.visa_backend to @py")
+    return "@py"
+
+
+def packaged_usb_backend():
+    import libusb_package
+    path = libusb_package.get_library_path()
+    if path is None or not path.is_file():
+        raise RuntimeError("Bundled libusb library missing; restore the complete application folder")
+    if libusb_package.get_libusb1_backend() is None:
+        raise RuntimeError("Bundled libusb could not load; check the x64 runtime dependencies")
+    return path
+
+
+def usb_resources():
+    # pyvisa-py 0.8 enumerates every interface before filtering list_resources().
+    # Call only its USB INSTR enumerator: blank LAN fields must never broadcast.
+    packaged_usb_backend()
+    from pyvisa_py.usb import USBInstrSession
+    return USBInstrSession.list_resources()
+
+
 class VisaBackendPool:
     """PyVISA reuses RMs: closing one would otherwise close every device session.
 
@@ -24,8 +49,14 @@ class VisaBackendPool:
     @classmethod
     def acquire(cls, backend):
         import pyvisa
+        backend = python_backend(backend)
         with cls.lock:
             if backend not in cls.managers:
+                try:
+                    packaged_usb_backend()
+                except Exception as exc:
+                    # LAN remains usable if USB dependencies are damaged/missing.
+                    log.warning("USB backend unavailable: %s", exc)
                 cls.managers[backend] = [pyvisa.ResourceManager(backend), 0]
             entry = cls.managers[backend]
             entry[1] += 1
@@ -33,6 +64,7 @@ class VisaBackendPool:
 
     @classmethod
     def release(cls, backend):
+        backend = python_backend(backend)
         with cls.lock:
             entry = cls.managers[backend]
             entry[1] -= 1
@@ -44,8 +76,8 @@ class VisaBackendPool:
 
 
 class VisaService:
-    def __init__(self, backend="", cancelled=None):
-        self.backend = backend
+    def __init__(self, backend="@py", cancelled=None):
+        self.backend = python_backend(backend)
         self.rm = None
         self.session = None
         self.owner = threading.get_ident()
@@ -59,6 +91,8 @@ class VisaService:
         self._check_owner()
         import pyvisa
         try:
+            if config.resource.upper().startswith("USB"):
+                packaged_usb_backend()
             self.rm = VisaBackendPool.acquire(self.backend)
             with VisaBackendPool.lock:
                 self.session = self.rm.open_resource(config.resource, open_timeout=config.timeout_ms)
@@ -109,14 +143,40 @@ class VisaService:
                     self.rm = None
 
 
-def scan_resources(backend=""):
-    import pyvisa
+def scan_resources(backend="@py"):
+    backend = python_backend(backend)
     rm = VisaBackendPool.acquire(backend)
     try:
         with VisaBackendPool.lock:
-            return list(rm.list_resources("?*")), str(rm.visalib)
+            return list(usb_resources()), f"pyvisa-py (@py): {rm.visalib}"
     finally:
         VisaBackendPool.release(backend)
+
+
+def backend_diagnostics():
+    """Load packaged libraries without opening instrument sessions or sending SCPI."""
+    result = {"backend": "@py", "ni_visa_required": False, "hardware_verified": False}
+    rm = VisaBackendPool.acquire("@py")
+    try:
+        result["library_class"] = type(rm.visalib).__module__ + "." + type(rm.visalib).__name__
+        result["tcpip_available"] = False
+        from pyvisa import constants
+        from pyvisa_py.sessions import Session
+        available = dict(Session.iter_valid_session_classes())
+        result["tcpip_available"] = all((constants.InterfaceType.tcpip, kind) in available
+                                        for kind in ("SOCKET", "INSTR"))
+        try:
+            result["libusb_library"] = str(packaged_usb_backend())
+            result["usb_available"] = (constants.InterfaceType.usb, "INSTR") in available
+        except Exception as exc:
+            result["usb_available"] = False
+            result["usb_error"] = str(exc)
+        result["usb_driver_requirement"] = "Device must already have a compatible WinUSB/libusb driver"
+        result["passed"] = (result["library_class"].startswith("pyvisa_py.")
+                            and result["tcpip_available"] and result["usb_available"])
+        return result
+    finally:
+        VisaBackendPool.release("@py")
 
 
 class UnexpectedResponse(ValueError):

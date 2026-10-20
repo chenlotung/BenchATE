@@ -1,5 +1,7 @@
 # NI-VISA 26.8 安裝與組件選擇（ATE Workbench）
 
+> 歷史文件：此指南僅適用 main 的 NI-VISA 版本，不適用 codex/pyvisa-py-backend 分支。新分支請見 [pyvisa-py 通訊指南](PYVISA_PY_zh-TW.md)，發行包不附 NI 安裝器。
+
 本指南對應你提供的 `ni-visa_26.8_online.exe`，適用於本專案 Windows 11 x64 可攜式版本。文件核對日期：2026-10-19。
 
 ## 先照這份清單選

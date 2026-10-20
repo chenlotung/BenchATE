@@ -8,7 +8,7 @@
 - Local original: Programming_Guide_DM3058.pdf
 - PDF explicitly covers both DM3058 and DM3058E (cover, summary).
 - Driver uses RIGOL command mode (not Agilent/Fluke emulation). No command-mode changes.
-- USB device interface; NI-VISA/UltraSigma driver setup required.
+- USB device interface. The original NI-VISA version used VISA/UltraSigma setup; the pyvisa-py branch uses PyUSB/libusb and requires an already compatible Windows USB driver binding. Compatibility is pending hardware verification.
 - :FUNC? (PDF 42) and single-display mode-specific :MEAS queries (PDF 58-74). :MEAS? is boolean freshness, NOT a value. :FUNC2:ON? (PDF 51) has no documented return format in this revision; dual display is Pending Verification and not queried.
 - Hardware verification: NOT performed.
 

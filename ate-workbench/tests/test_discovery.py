@@ -206,7 +206,7 @@ def test_real_scan_identifies_closes_probe_then_connects_and_keeps_one_session(q
         def close(self):
             active[self.resource_name] -= 1
     class Backend:
-        visalib = "Mock native VISA"
+        visalib = "Mock Python VISA"
         def list_resources(self, _query):
             return [resource, unknown]
         def open_resource(self, name, **_kwargs):
@@ -217,6 +217,7 @@ def test_real_scan_identifies_closes_probe_then_connects_and_keeps_one_session(q
         native.append(Backend())
         return native[-1]
     monkeypatch.setattr("pyvisa.ResourceManager", rm)
+    monkeypatch.setattr("app.protocol.usb_resources", lambda: [resource, unknown])
     manager = InstrumentManager(config_path=tmp_path/"devices.json")
     try:
         # A saved record is not admitted when enumeration no longer finds it.

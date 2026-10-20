@@ -18,7 +18,7 @@ def capabilities_for(config):
     return cls(config, lambda: None).get_capabilities()
 
 
-def create_driver(config, *, demo=False, backend="", transport_factory=None, cancelled=None):
+def create_driver(config, *, demo=False, backend="@py", transport_factory=None, cancelled=None):
     if demo:
         from app.drivers.mock import DemoInstrument
         return DemoInstrument(config)

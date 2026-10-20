@@ -1,5 +1,33 @@
 # ATE Workbench V1 交付報告
 
+## pyvisa-py 分支更新（2026-10-20）
+
+分支：`codex/pyvisa-py-backend`。main 原本的 NI-VISA 版本保留；以下本節描述新分支，後方 2026-10-19 內容為原版本的歷史驗證紀錄。
+
+- 通訊固定使用 `@py`，舊空字串設定也使用 pyvisa-py；拒絕 NI DLL / `@ivi` 設定，不自動改回 native VISA 或 Demo。
+- 新增 pyvisa-py 0.8.1、PyUSB 1.3.1、libusb-package 1.0.30.0（含 x64 libusb 1.0.30 DLL）及 importlib_resources 7.1.0，保留上游授權。PyVISA 前端與各儀器指令保持原設計。
+- USB 專用枚舉不呼叫會先搜尋所有介面的通用 list_resources；Scope / AC Source 仍各自依可空白 IPv4 欄位探測。一鍵掃描、型號篩選與已連線清單沿用。
+- 新 ZIP 為 `ATEWorkbench-0.1.0-pyvisa-py-windows-x64.zip`，與原版區分。移除 NI 安裝器及 NI 安裝 PDF；只附 EXE、必要依賴、預設設定、啟動捷徑、使用及通訊 PDF、授權與 manifest。排除 Python 原始碼、型別 stub、依賴測試及建置 hook 檔案。
+
+驗證：
+
+| 項目 | 結果 |
+|---|---|
+| 完整軟體測試 | 121 passed；含 localhost 真實 pyvisa-py TCP 分段回覆、timeout、無 USB 依賴仍可連 LAN，以及真實 Python VXI-11 後端搭配 RPC mock 的分段二進位讀取 |
+| 後端選擇 | 故意設定不存在的 native VISA 環境變數仍使用 pyvisa-py；不允許 native wrapper |
+| 原始碼 Demo | 20 秒完成；無錯誤、截圖成功、背景執行緒與 CSV 正常釋放 |
+| 可攜式 EXE | 中文含空白目錄解壓、PATH 移除 Python後執行；20.074 秒，6 個數值通道各 20 筆、無錯誤、截圖成功、正常結束 |
+| EXE 後端及 DLL | `pyvisa_py.highlevel.PyVisaLibrary`，USB/TCPIP class 可用；libusb DLL 從解壓後 `_internal/libusb_package/` 載入。EXE 封裝不包含 pyvisa.ctwrapper |
+| 發行文件 | 3 份使用者 PDF；含依賴授權共檢查 22 份 PDF、渲染 27 頁；5 頁變更後使用者文件已視覺檢查。PDF 內容、連結、ZIP CRC 與 manifest 校驗通過 |
+| 依賴一致性 | pip check 通過 |
+| 1 小時測試 | 依使用者要求跳過 |
+
+**限制：沒有實機 USB、Scope 或 AC Source 驗證，也未在另一台乾淨電腦測試。** USB 仍需已有相容 Windows WinUSB/libusb 驅動；本分支不安裝或更換系統驅動。6312A / 63210A 的本地手冊未明列 USB class 或驅動要求，不將 USBTMC 相容性視為已確認。
+
+本次證據：`docs/validation/pytest.xml`、`python_backend.json`、`portable_backend.json`、`smoke.json`、`portable_smoke.json`、`release_pdf_checks.json`。這些驗證及交付報告不放進發行 ZIP。
+
+## 原 NI-VISA 版本歷史紀錄
+
 日期：2026-10-19（Asia/Taipei）。所有軟體測試使用 Demo / Mock VISA；沒有操作實體儀器。
 依使用者後續要求，**跳過 1 小時測試**。短時間執行紀錄不代表 1 小時通過。
 

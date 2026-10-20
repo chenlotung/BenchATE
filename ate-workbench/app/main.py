@@ -128,9 +128,21 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="ATE Workbench")
     parser.add_argument("--demo", action="store_true", help="Explicit synthetic demo drivers; no VISA I/O")
     parser.add_argument("--config", type=Path)
+    parser.add_argument("--check-backend", action="store_true", help="Check packaged libraries without sending instrument commands")
     parser.add_argument("--soak-seconds", type=float, default=0, help="Demo-only timed validation run (3600 = one hour)")
-    parser.add_argument("--report", type=Path, default=ROOT/"docs/validation/demo_run.json")
+    parser.add_argument("--report", type=Path)
     args = parser.parse_args(argv)
+    if args.check_backend:
+        from app.protocol import backend_diagnostics
+        report = args.report or ROOT/"logs/backend_check.json"
+        try:
+            result = backend_diagnostics()
+        except Exception as exc:
+            result = {"passed": False, "backend": "@py", "error": str(exc)}
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        return 0 if result["passed"] else 1
+    args.report = args.report or ROOT/"docs/validation/demo_run.json"
     if args.soak_seconds and not args.demo:
         parser.error("Timed validation runs require --demo")
     settings = load_application()

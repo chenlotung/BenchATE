@@ -3,11 +3,11 @@
   "documentation_profile": "end_user",
   "user_documents_checked": 3,
   "generated_pdfs_checked": 22,
-  "local_pdf_links_checked": 3,
+  "local_pdf_links_checked": 2,
   "developer_documents_excluded": true,
   "page_counts": {
     "README_PORTABLE.pdf": 2,
-    "NI_VISA_INSTALLATION_zh-TW.pdf": 4,
+    "PYVISA_PY_zh-TW.pdf": 2,
     "THIRD_PARTY_NOTICES.pdf": 1,
     "_internal/numpy-2.5.4.dist-info/licenses/numpy/random/LICENSE.pdf": 2,
     "_internal/numpy-2.5.4.dist-info/licenses/numpy/_core/src/npysort/x86-simd-sort/LICENSE.pdf": 1,
@@ -30,7 +30,7 @@
     "licenses/numpy/numpy/random/LICENSE.pdf": 2
   },
   "zip_integrity_and_manifest": "passed",
-  "rendered_pages": 29,
+  "rendered_pages": 27,
   "contact_sheets": [
     "G:\\Bench_ATE\\ate-workbench\\tmp\\pdfs\\release_review\\contact-01.png",
     "G:\\Bench_ATE\\ate-workbench\\tmp\\pdfs\\release_review\\contact-02.png",

@@ -13,7 +13,7 @@ from markdown_it import MarkdownIt
 from pypdf import PdfReader
 
 from release_documents import release_text
-from build_portable import RELEASE_BUNDLE, RELEASE_ROOT_NAMES, USER_DOCUMENTS
+from build_portable import ARCHIVE_NAME, RELEASE_BUNDLE, RELEASE_ROOT_NAMES, USER_DOCUMENTS
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,6 +37,8 @@ def validate(bundle):
     assert not list(bundle.rglob("*.md")), "Markdown remained in release"
     assert not (bundle/"NI_VISA_INSTALLATION_zh-TW.txt").exists()
     assert not (bundle/"README_PORTABLE.txt").exists()
+    assert not (bundle/"installers").exists()
+    assert not (bundle/"NI_VISA_INSTALLATION_zh-TW.pdf").exists()
     parser = MarkdownIt("commonmark", {"html": False}).enable("table")
     checked_links = 0
     page_counts = {}
@@ -47,7 +49,7 @@ def validate(bundle):
         reader = PdfReader(target)
         text = compact("\n".join(body_text(p) for p in reader.pages))
         markdown = source.read_text(encoding="utf-8-sig")
-        markdown = markdown.replace("docs/NI_VISA_INSTALLATION_zh-TW.md", "NI_VISA_INSTALLATION_zh-TW.md")
+        markdown = markdown.replace("docs/PYVISA_PY_zh-TW.md", "PYVISA_PY_zh-TW.md")
         for token in parser.parse(release_text(markdown)):
             if token.type == "inline":
                 for child in token.children or []:
@@ -120,7 +122,7 @@ def main():
     parser.add_argument("--poppler", type=Path)
     args = parser.parse_args()
     result = validate(args.bundle)
-    archive = ROOT/"releases/ATEWorkbench-0.1.0-windows-x64.zip"
+    archive = ROOT/"releases"/ARCHIVE_NAME
     with ZipFile(archive) as stream:
         assert stream.testzip() is None
         manifest = json.loads(stream.read("ATEWorkbench/manifest.json"))

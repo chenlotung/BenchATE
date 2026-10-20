@@ -1,12 +1,12 @@
 {
   "mode": "DEMO",
-  "elapsed_seconds": 20.036,
+  "elapsed_seconds": 20.007,
   "requested_seconds": 20.0,
-  "started_at": "2026-10-19T15:04:21.002772+08:00",
-  "app_source_sha256": "6362f0b8337cde6dc48ab4cac13906e70b2df95fab36f00c6ebf34bb97a1c512",
+  "started_at": "2026-10-20T18:06:29.217217+08:00",
+  "app_source_sha256": "7e09d05c3fee8d81bdd7bc6322811ebab52fecf425845d16418f61c8bf1d699e",
   "python_version": "3.13.14 (tags/v3.13.14:fd17997, Jun 10 2026, 13:03:48) [MSC v.1944 64 bit (AMD64)]",
   "complete": true,
-  "heartbeat_count": 182,
+  "heartbeat_count": 181,
   "max_heartbeat_gap_seconds": 0.125,
   "frame_counts": {
     "demo_chroma_61512/CH1": 20,
@@ -36,8 +36,8 @@
   "screenshot_received": true,
   "memory_samples": [
     {
-      "elapsed_seconds": 10.94,
-      "private_bytes": 743264256
+      "elapsed_seconds": 11.09,
+      "private_bytes": 743219200
     }
   ],
   "hardware_verified": false,

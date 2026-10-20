@@ -7,7 +7,7 @@ name = "ate-workbench"
 version = "0.1.0"
 description = "Windows laboratory instrument connection, monitoring and output control"
 requires-python = ">=3.11"
-dependencies = ["PySide6>=6.8,<7", "pyqtgraph>=0.13.7,<0.15", "PyVISA>=1.14,<2", "numpy>=1.26,<3"]
+dependencies = ["PySide6>=6.8,<7", "pyqtgraph>=0.13.7,<0.15", "PyVISA>=1.15,<2", "pyvisa-py>=0.8.1,<0.9", "PyUSB>=1.3,<2", "libusb-package>=1.0.30,<2", "numpy>=1.26,<3"]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<10", "pytest-qt>=4.4,<5", "pypdf>=5,<7"]

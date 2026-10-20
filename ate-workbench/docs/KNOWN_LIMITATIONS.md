@@ -1,6 +1,6 @@
 # 已知限制
 
-1. **所有硬體均 Pending Hardware Verification**。本機沒有已確認可用的原生 VISA backend，也沒有使用本程式連接實體儀器；Mock / Demo 不代表硬體相容。
+1. **所有硬體均 Pending Hardware Verification**。本分支使用 pyvisa-py，不載入本機 NI-VISA；沒有以本程式連接實體儀器，Mock / Demo 與 localhost 通訊測試不代表硬體相容。
 2. **1 小時穩定性測試依使用者後續要求略過**。曾啟動的短暫執行保留原始數據，但不能標記為 1 小時通過。
 3. 61512 控制限定 SINGLE phase、FIXED、AC；三相讀取可選擇/恢復 phase，三相輸出控制尚未建立完整 interlock。
 4. 61512 以 Ethernet 使用時，不傳送僅限 RS232 的 SYST:REM/LOC。6312A USB 同樣不使用僅限 RS232 的 CONF:REM。
@@ -17,3 +17,4 @@
 15. 沒有 MSI、數位簽章、測試腳本編輯器、Pass/Fail 排程或報表產生器；這些不在本階段範圍。
 16. 自動掃描只接受確切型號；61500 系列通用識別無法證明是 61512，因此不加入設備表。原始 driver 的明確銘牌確認能力不會由掃描自動啟用。
 17. LAN 僅探測 Scope / AC Source 欄位中填入的 IPv4；空白欄位會跳過該台。USB 依 VISA 枚舉，非 USBTMC、其他 LAN 機種及其他品牌/型號不列入；不做整個 LAN 搜尋。
+18. USB 使用 PyUSB/libusb，必須已有相容的 Windows 裝置驅動。隨包 DLL 不會安裝或綁定系統驅動；原有 NI USBTMC 驅動不保證相容。6312A 與 63210A 的本地手冊未明列 USBTMC class 或 Windows 驅動要求，須確認實機描述資訊與介面卡。

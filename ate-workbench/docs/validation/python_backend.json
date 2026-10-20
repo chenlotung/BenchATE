@@ -1,0 +1,11 @@
+{
+  "backend": "@py",
+  "ni_visa_required": false,
+  "hardware_verified": false,
+  "library_class": "pyvisa_py.highlevel.PyVisaLibrary",
+  "tcpip_available": true,
+  "libusb_library": "G:\\Bench_ATE\\ate-workbench\\.venv-win\\Lib\\site-packages\\libusb_package\\libusb-1.0.dll",
+  "usb_available": true,
+  "usb_driver_requirement": "Device must already have a compatible WinUSB/libusb driver",
+  "passed": true
+}

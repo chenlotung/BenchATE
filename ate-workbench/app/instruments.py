@@ -1,6 +1,7 @@
 """Supported-device discovery and application instrument management."""
 
 import ipaddress
+import logging
 import re
 from dataclasses import dataclass, field, replace
 from PySide6.QtCore import QObject, Signal, Slot, QThread
@@ -80,7 +81,7 @@ def lan_targets(scope_ip="", ac_ip=""):
     return targets, notes
 
 
-def discover(*, backend="", scope_ip="", ac_ip="", excluded=(), cancelled=lambda: False,
+def discover(*, backend="@py", scope_ip="", ac_ip="", excluded=(), cancelled=lambda: False,
              progress=lambda _message: None, enumerate_resources=None, transport_factory=None):
     report = DiscoveryReport()
     enumerate_resources = enumerate_resources or scan_resources
@@ -93,6 +94,8 @@ def discover(*, backend="", scope_ip="", ac_ip="", excluded=(), cancelled=lambda
     progress("Scanning USB VISA resources…")
     try:
         resources, report.backend = enumerate_resources(backend)
+        if not resources:
+            report.notes.append("No accessible USBTMC devices; check USB driver and other applications")
         for resource in resources:
             try:
                 key = resource_key(resource)
@@ -144,8 +147,9 @@ def discover(*, backend="", scope_ip="", ac_ip="", excluded=(), cancelled=lambda
                     connection=connection, channels=channels)
         except InterruptedError:
             break
-        except Exception:
+        except Exception as exc:
             # A failing device must not hide other supported devices or stop the scan.
+            logging.getLogger(__name__).warning("Discovery failed for %s: %s", resource, exc)
             report.failed += 1
         finally:
             if io is not None:
@@ -168,7 +172,7 @@ class ResourceScanner(QThread):
     failed = Signal(str)
     progress = Signal(str)
 
-    def __init__(self, backend="", parent=None, **options):
+    def __init__(self, backend="@py", parent=None, **options):
         super().__init__(parent)
         self.backend = backend
         self.options = options
@@ -191,7 +195,7 @@ class InstrumentManager(QObject):
     scan_changed = Signal(bool)
     scan_progress = Signal(str)
 
-    def __init__(self, *, demo=False, backend="", config_path=None, parent=None):
+    def __init__(self, *, demo=False, backend="@py", config_path=None, parent=None):
         super().__init__(parent)
         self.demo, self.backend, self.config_path = demo, backend, config_path
         self.configs, self.states, self.workers = {}, {}, {}

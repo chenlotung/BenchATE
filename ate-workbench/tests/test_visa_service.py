@@ -16,13 +16,12 @@ def test_shared_visa_manager_scan_and_disconnect_do_not_close_other_devices(monk
             assert not self.closed
             return "reply"
     class Manager:
-        visalib = "Fake native VISA backend"
+        visalib = "Fake Python VISA backend"
         closed = False
         def open_resource(self, *_args, **_kwargs):
             return Session()
         def list_resources(self, query):
-            assert query == "?*"
-            return ("USB0::1::2::SN::INSTR",)
+            pytest.fail("Generic enumeration would discover LAN devices")
         def close(self):
             self.closed = True
     backend = Manager()
@@ -31,16 +30,17 @@ def test_shared_visa_manager_scan_and_disconnect_do_not_close_other_devices(monk
         calls.append(name)
         return backend
     monkeypatch.setattr("pyvisa.ResourceManager", resource_manager)
-    first, second = VisaService("test"), VisaService("test")
+    monkeypatch.setattr("app.protocol.usb_resources", lambda: ("USB0::1::2::SN::INSTR",))
+    first, second = VisaService("@py"), VisaService("")
     first.open(demo_configs()[0])
     second.open(demo_configs()[1])
-    resources, _ = scan_resources("test")
+    resources, _ = scan_resources()
     assert len(resources) == 1 and not backend.closed
     first.close()
     assert not backend.closed and second.query("read") == "reply"
     second.close()
-    assert backend.closed and len(calls) == 1
-    assert "test" not in VisaBackendPool.managers
+    assert backend.closed and calls == ["@py"]
+    assert "@py" not in VisaBackendPool.managers
 
 
 def test_transport_enforces_session_thread_ownership():

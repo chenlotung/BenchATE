@@ -42,6 +42,7 @@ app/
 ## 通訊、執行緒與安全狀態
 
 GUI 只呼叫單一 InstrumentManager，經由有界 PriorityQueue 交付命令。
+本分支的 VisaService 固定使用 pyvisa-py `@py`，不回退至 NI-VISA；USB 透過 PyUSB 與 libusb-package 隨包 DLL。USB 專用枚舉直接使用 pyvisa-py 0.8.x 的 USBInstrSession，避免其一般 list_resources 在套用 filter 前執行 LAN 搜尋。Windows 裝置驅動綁定是外部前提，不由應用程式安裝。
 每個實體 resource 僅允許一個 InstrumentWorker (QThread) 擁有 driver/session。
 Scan & Connect 由獨立 ResourceScanner 背景執行 USB 枚舉及唯讀 *IDN? / 6312A *RDT?。Scope/AC 的 IP 欄位各自決定是否探測該 LAN 設備；空白時忽略 backend 枚舉到的 LAN 資源。
 `instruments.py` 中的 discovery 流程嚴格比對 vendor、完整 model 及允許的 transport；只回傳合格設備。探測 session 先關閉，再由 InstrumentWorker 建立正式 session。已連線及正在連線的 resource 從掃描排除，避免第二個 session。
